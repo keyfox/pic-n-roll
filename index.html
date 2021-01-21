@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Pic'n'roll</title>
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://unpkg.com/vue@3.0.5"></script>
+  </head>
+  <body>
+    <div id="root">
+      <div id="app">
+        <div id="left-column" class="column">
+          <ul id="history" class="fill">
+            <li @click="show(h)" v-for="h in history" :key="h">
+              <img :src="h.src" />
+              <div class="image-filename">{{h.name}}</div>
+            </li>
+          </ul>
+        </div>
+        <div class="column fill" id="image-preview">
+          <template v-if="candidates.length === 0">
+            <p>Drag directories here.</p>
+          </template>
+          <template v-else-if="shownItem === null">
+            <p>
+              {{candidates.length}} image {{candidates.length >= 2 ? "file":
+              "files" }} found.
+            </p>
+            <p>Ready to Pic'n'Roll!</p>
+            <p>Click a die on the right bottom of window.</p>
+          </template>
+          <template v-else>
+            <div id="image-summary">
+              <div class="image-filename">{{shownItem.name}}</div>
+              <div class="image-location">{{shownItem.path}}</div>
+            </div>
+            <div id="image-container">
+              <img :src="shownItem.src" />
+            </div>
+          </template>
+        </div>
+        <button @click="roll" id="die" v-if="candidates.length !== 0">
+          <span class="text">🎲</span>
+        </button>
+        <div id="ready-to-drop" v-if="dragHovering">
+          <p>Ready to Drop!</p>
+        </div>
+      </div>
+    </div>
+    <script src="./code.js"></script>
+  </body>
+</html>
