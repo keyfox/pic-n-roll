@@ -1,10 +1,10 @@
-# Pic'n'Roll
+# Pic 'n' Roll
 
 An easy image file picker.
 
 ## Usage
 
-  1. Go to [Pic'n'Roll](https://keyfox.github.io/pic-n-roll/).
+  1. Go to [Pic 'n' Roll](https://keyfox.github.io/pic-n-roll/).
   1. Drop files or directories which you'd like to pick an image file from onto the app.
      - NOTE: When you drop a directory, the app will also search its subdirectories recursively.
      Keep in mind that it takes long time to process a large directory tree.
