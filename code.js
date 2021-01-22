@@ -31,7 +31,7 @@ const PickNRollApp = {
       // the image currently shown.
       shownItem: null,
       // candidate images to pick from.
-      candidates: [],
+      candidates: null,
       // indicates whether files or directories are being dragged.
       dragHovering: false,
       // indicates whether the app is searching for image files.
