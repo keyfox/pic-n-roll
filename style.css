@@ -87,6 +87,9 @@ div#image-preview {
   padding: 16px;
   color: #30322f;
 }
+div#image-preview.ready-to-pick {
+  cursor: pointer;
+}
 
 /* IMAGE PREVIEW - IMAGE SUMMARY */
 
@@ -131,8 +134,32 @@ div#image-preview p.error {
   font-size: 16px;
   padding: 8px 15px;
 }
-div#image-preview p.die-text {
+div#image-preview p.emoji-text {
   font-size: 96px;
+  display: inline-block;
+  margin: 0 auto;
+}
+div#image-preview p#die-icon {
+  animation: bounce-animation 1s infinite;
+  position: relative;
+}
+@keyframes bounce-animation {
+  0%,
+  100% {
+    top: 0;
+    transform: scale(1);
+  }
+  30% {
+    top: -32px;
+    transform: scale(0.96, 1.04);
+  }
+  60% {
+    transform: scale(1);
+  }
+  90% {
+    top: 0;
+    transform: scale(1.15, 0.9);
+  }
 }
 
 /* OVERLAY */
