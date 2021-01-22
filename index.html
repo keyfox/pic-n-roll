@@ -17,7 +17,11 @@
             </li>
           </ul>
         </div>
-        <div class="column fill" id="image-preview">
+        <div
+          class="column fill"
+          id="image-preview"
+          v-on="candidatesCount >= 1 ? {click: roll} : {}"
+        >
           <template v-if="candidatesCount === 0">
             <p>Drag directories here.</p>
             <p class="error" v-if="itemsDropped">
@@ -30,8 +34,9 @@
               {{candidatesCount}} image {{candidatesCount >= 2 ? "files": "file"
               }} found.
             </p>
+            <p class="die-text">🎲</p>
             <p>Ready to Pic 'n' Roll!</p>
-            <p>Click a die on the right bottom of window.</p>
+            <p>Click the right column to pick an image randomly.</p>
           </template>
           <template v-else>
             <div id="image-summary">
@@ -43,9 +48,6 @@
             </div>
           </template>
         </div>
-        <button @click="roll" id="die" v-if="candidatesCount >= 1">
-          <span class="text">🎲</span>
-        </button>
         <div id="overlay" v-if="dragHovering || loadingDroppedItem">
           <p v-if="dragHovering">Ready to Drop!</p>
           <p v-if="loadingDroppedItem">Searching for image files...</p>

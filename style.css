@@ -131,20 +131,8 @@ div#image-preview p.error {
   font-size: 16px;
   padding: 8px 15px;
 }
-
-/* DIE ICON */
-div#die-container {
-  padding: 16px;
-}
-button#die {
-  position: fixed;
-  right: 48px;
-  bottom: 48px;
+div#image-preview p.die-text {
   font-size: 96px;
-  border: none;
-  background: transparent;
-  outline: none;
-  cursor: pointer;
 }
 
 /* OVERLAY */

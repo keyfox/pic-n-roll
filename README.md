@@ -8,7 +8,8 @@ An easy image file picker.
 1. Drop files or directories which you'd like to pick an image file from onto the app.
    - NOTE: When you drop a directory, the app will also search its subdirectories recursively.
      Keep in mind that it takes long time to process a large directory tree.
-1. Click 🎲 as many times as you want to. An image will be picked and shown for each click.
+1. Click the right column of app (where 🎲 will be shown) as many times as you want to.
+   An image will be picked and shown for each click.
 
 ## Tips
 
