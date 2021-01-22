@@ -139,9 +139,9 @@ button#die {
   cursor: pointer;
 }
 
-/* DnD INDICATOR */
+/* OVERLAY */
 
-div#ready-to-drop {
+div#overlay {
   position: absolute;
   top: 0;
   left: 0;

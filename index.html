@@ -42,8 +42,9 @@
         <button @click="roll" id="die" v-if="candidates.length !== 0">
           <span class="text">🎲</span>
         </button>
-        <div id="ready-to-drop" v-if="dragHovering">
-          <p>Ready to Drop!</p>
+        <div id="overlay" v-if="dragHovering || loadingDroppedItem">
+          <p v-if="dragHovering">Ready to Drop!</p>
+          <p v-if="loadingDroppedItem">Searching for image files...</p>
         </div>
       </div>
     </div>

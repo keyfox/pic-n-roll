@@ -34,6 +34,8 @@ const PickNRollApp = {
       candidates: [],
       // indicates whether files or directories are being dragged.
       dragHovering: false,
+      // indicates whether the app is searching for image files.
+      loadingDroppedItem: false,
     };
   },
   mounted() {
@@ -49,6 +51,7 @@ const PickNRollApp = {
     window.addEventListener("drop", async (ev) => {
       ev.preventDefault();
       this.dragHovering = false;
+      this.loadingDroppedItem = true;
       const droppedItems = ev.dataTransfer.items;
       const entries = [];
       const promises = [];
