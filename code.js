@@ -63,6 +63,7 @@ const PickNRollApp = {
       this.candidates = entries.filter((e) => hasImageExt(e.name));
       lastPickedIndex = -1;
       this.loadingDroppedItem = false;
+      this.shownItem = null;
     });
     window.addEventListener("dragleave", (ev) => {
       ev.preventDefault();
