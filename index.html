@@ -18,9 +18,9 @@
           </ul>
         </div>
         <div class="column fill" id="image-preview">
-          <template v-if="candidates === null || candidates.length === 0">
+          <template v-if="candidatesCount === 0">
             <p>Drag directories here.</p>
-            <p class="error" v-if="candidates && candidates.length === 0">
+            <p class="error" v-if="itemsDropped">
               Some entries have been dropped, but no image files found inside
               any of them.
             </p>
@@ -43,11 +43,7 @@
             </div>
           </template>
         </div>
-        <button
-          @click="roll"
-          id="die"
-          v-if="candidates && candidates.length !== 0"
-        >
+        <button @click="roll" id="die" v-if="candidatesCount >= 1">
           <span class="text">🎲</span>
         </button>
         <div id="overlay" v-if="dragHovering || loadingDroppedItem">

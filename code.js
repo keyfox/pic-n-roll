@@ -112,6 +112,14 @@ const PickNRollApp = {
       });
     },
   },
+  computed: {
+    candidatesCount() {
+      return this.itemsDropped ? this.candidates.length : 0;
+    },
+    itemsDropped() {
+      return this.candidates !== null;
+    },
+  },
 };
 
 Vue.createApp(PickNRollApp).mount("#root");
