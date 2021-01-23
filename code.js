@@ -24,7 +24,8 @@ let lastPickedIndex = -1;
 const HISTORY_MAX_LENGTH = 32;
 const IMAGE_CACHE_MAX_LENGTH = HISTORY_MAX_LENGTH;
 let imagesCreated = 0;
-const DEBOUNCE_DELAY = 0;
+const DEBOUNCE_DELAY = 125;
+let loadTimeTimer;
 
 const PickNRollApp = {
   data() {
@@ -33,6 +34,9 @@ const PickNRollApp = {
       history: [],
       // the ID of image currently shown.
       shownImageId: null,
+      // the last image which completely loaded
+      lastImageLoaded: null,
+      loadingTakingTime: null,
       // the images loaded.
       images: {},
       // the ID of image user really wants to show.
@@ -94,7 +98,7 @@ const PickNRollApp = {
 
       this.imagePendingToShow = imageId;
       if (opts.addHistory) {
-        this.addHistory(imageId);
+        this.addHistory({ id: imageId, loaded: false });
       }
       await this.images[imageId].readyPromise;
 
@@ -136,7 +140,6 @@ const PickNRollApp = {
 
       this.images[id] = {
         ready: false,
-        tookTimeToLoad: false,
       };
       this.images[id].readyPromise = Promise.all(
         Object.keys(item).map(async (k) => {
@@ -146,7 +149,6 @@ const PickNRollApp = {
       ).then(() => {
         this.images[id].ready = true;
       });
-      setTimeout(() => (this.images[id].tookTimeToLoad = true), DEBOUNCE_DELAY);
 
       return id;
     },
@@ -181,6 +183,19 @@ const PickNRollApp = {
     },
     shownImage() {
       return this.shownImageId === null ? null : this.images[this.shownImageId];
+    },
+  },
+  watch: {
+    shownImageId(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        // TODO: is this `if` not needed?
+        // TODO: possibly we can use `debounce` here
+        clearTimeout(loadTimeTimer);
+        this.loadingTakingTime = false;
+        loadTimeTimer = setTimeout(() => {
+          this.loadingTakingTime = true;
+        }, DEBOUNCE_DELAY);
+      }
     },
   },
 };

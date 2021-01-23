@@ -12,13 +12,15 @@
         <div id="left-column" class="column">
           <ul id="history" class="fill">
             <template v-for="h in history" :key="h">
-              <li
-                @click="show(h)"
-                v-if="images[h].ready || images[h].tookTimeToLoad"
-              >
-                <img :src="images[h].objectUrl" v-if="images[h].ready" />
-                <div class="loading lds-dual-ring" v-else></div>
-                <div class="image-filename">{{images[h].name}}</div>
+              <li @click="show(h.id)" v-if="images[h.id].ready">
+                <img
+                  :src="images[h.id].objectUrl"
+                  v-show="h.loaded"
+                  v-if="images[h.id].ready"
+                  @load="h.loaded = true"
+                />
+                <div class="loading lds-dual-ring" v-if="!h.loaded"></div>
+                <div class="image-filename">{{images[h.id].name}}</div>
               </li>
             </template>
           </ul>
@@ -47,13 +49,24 @@
             <p>Click the right column to pick an image randomly.</p>
           </template>
           <template v-else>
-            <div id="image-summary">
+            <div id="image-summary" v-show="shownImageId === lastImageLoaded">
               <div class="image-filename">{{shownImage.name}}</div>
               <div class="image-location">{{shownImage.path}}</div>
             </div>
-            <div id="image-container">
-              <img :src="shownImage.objectUrl" v-if="shownImage.ready" />
-              <div class="loading lds-dual-ring" v-else></div>
+            <div
+              id="image-container"
+              v-show="shownImageId === lastImageLoaded || loadingTakingTime"
+            >
+              <img
+                :src="shownImage.objectUrl"
+                v-if="shownImage.ready"
+                v-show="shownImageId === lastImageLoaded"
+                @load="lastImageLoaded = shownImageId"
+              />
+              <div
+                class="loading lds-dual-ring"
+                v-if="shownImageId !== lastImageLoaded"
+              ></div>
             </div>
           </template>
         </div>
