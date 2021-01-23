@@ -167,7 +167,7 @@ const PickNRollApp = {
         let i = null;
         do {
           i = Math.floor(Math.random() * ca.length);
-        } while (i === lastPickedIndex);
+        } while (i === lastPickedIndex && ca.length >= 2);
         return i;
       })();
       lastPickedIndex = index;
