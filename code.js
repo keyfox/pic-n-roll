@@ -90,21 +90,21 @@ const PickNRollApp = {
       ];
     },
     async show(imageId, opts) {
-      opts = { addHistory: false, when: Promise.resolve(), ...(opts || {}) };
+      opts = { addHistory: false, ...(opts || {}) };
 
       this.imagePendingToShow = imageId;
       if (opts.addHistory) {
         this.addHistory(imageId);
       }
-      opts.when.then(() => {
-        if (this.imagePendingToShow !== imageId) {
-          return;
-        }
-        this.shownImageId = imageId;
-        this.imagePendingToShow = null;
-      });
+      await this.images[imageId].readyPromise;
+
+      if (this.imagePendingToShow !== imageId) {
+        return;
+      }
+      this.shownImageId = imageId;
+      this.imagePendingToShow = null;
     },
-    loadImageFile(item) {
+    async loadImageFile(fileEntry) {
       // assign an unique ID for each load
       const id = imagesCreated;
       ++imagesCreated;
@@ -116,47 +116,43 @@ const PickNRollApp = {
           .map((e) => parseInt(e, 10))
           .reduce((a, b) => Math.min(a, b))
           .toString();
+        await this.images[elim].destroy();
+        this.history = this.history.filter((i) => i !== parseInt(elim, 10));
         delete this.images[elim];
       }
 
-      this.images[id] = { loading: true, tookTimeToLoad: false };
-      const loadPromise = Promise.all(
-        Object.keys(item).map((k) => {
-          return Promise.resolve(item[k]).then((value) => {
-            this.images[id][k] = value;
-          });
-        })
-      ).then(() => {
-        this.images[id].loading = false;
-      });
-      setTimeout(() => (this.images[id].tookTimeToLoad = true), DEBOUNCE_DELAY);
-
-      return { id, loadPromise };
-    },
-    async showFile(fileEntry, opts) {
       const item = {
         path: fileEntry.fullPath,
         name: fileEntry.name,
-        src: new Promise((resolve) => {
-          setTimeout(() => {
-            fileEntry.file((f) => {
-              const reader = new FileReader();
-              reader.readAsDataURL(f);
-              reader.addEventListener("load", async () => {
-                resolve(reader.result);
-              });
-            });
-          }, 0);
+        objectUrl: new Promise((resolve) => {
+          fileEntry.file((f) => {
+            resolve(URL.createObjectURL(f));
+          });
         }),
+        async destroy() {
+          URL.revokeObjectURL(await this.objectUrl);
+        },
       };
-      const { id, loadPromise } = this.loadImageFile(item);
-      this.show(id, {
-        ...opts,
-        when: Promise.race([
-          new Promise((resolve) => setTimeout(resolve, DEBOUNCE_DELAY)),
-          loadPromise,
-        ]),
+
+      this.images[id] = {
+        ready: false,
+        tookTimeToLoad: false,
+      };
+      this.images[id].readyPromise = Promise.all(
+        Object.keys(item).map(async (k) => {
+          const value = await Promise.resolve(item[k]);
+          this.images[id][k] = value;
+        })
+      ).then(() => {
+        this.images[id].ready = true;
       });
+      setTimeout(() => (this.images[id].tookTimeToLoad = true), DEBOUNCE_DELAY);
+
+      return id;
+    },
+    async showFile(fileEntry, opts) {
+      const id = await this.loadImageFile(fileEntry);
+      this.show(id, opts);
     },
     roll() {
       // aliasing

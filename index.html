@@ -5,7 +5,6 @@
     <title>Pic 'n' roll</title>
     <link rel="stylesheet" href="./style.css" />
     <script src="https://unpkg.com/vue@3.0.5"></script>
-    <script src="https://cdn.jsdelivr.net/npm/throttle-debounce@3.0.1/umd/index.min.js"></script>
   </head>
   <body>
     <div id="root">
@@ -15,13 +14,10 @@
             <template v-for="h in history" :key="h">
               <li
                 @click="show(h)"
-                v-if="!images[h].loading || images[h].tookTimeToLoad"
+                v-if="images[h].ready || images[h].tookTimeToLoad"
               >
-                <div
-                  class="loading lds-dual-ring"
-                  v-if="images[h].loading && images[h].tookTimeToLoad"
-                ></div>
-                <img :src="images[h].src" v-else-if="!images[h].loading" />
+                <img :src="images[h].objectUrl" v-if="images[h].ready" />
+                <div class="loading lds-dual-ring" v-else></div>
                 <div class="image-filename">{{images[h].name}}</div>
               </li>
             </template>
@@ -29,7 +25,7 @@
         </div>
         <div
           class="column fill"
-          :class="[{'ready-to-pick': candidatesCount >= 1, 'image-loading': loadingImage}]"
+          :class="[{'ready-to-pick': candidatesCount >= 1}]"
           id="image-preview"
           v-on="candidatesCount >= 1 ? {click: roll} : {}"
         >
@@ -56,11 +52,8 @@
               <div class="image-location">{{shownImage.path}}</div>
             </div>
             <div id="image-container">
-              <div
-                class="loading lds-dual-ring"
-                v-if="shownImage.loading"
-              ></div>
-              <img :src="shownImage.src" v-else />
+              <img :src="shownImage.objectUrl" v-if="shownImage.ready" />
+              <div class="loading lds-dual-ring" v-else></div>
             </div>
           </template>
         </div>
