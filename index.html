@@ -5,21 +5,31 @@
     <title>Pic 'n' roll</title>
     <link rel="stylesheet" href="./style.css" />
     <script src="https://unpkg.com/vue@3.0.5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/throttle-debounce@3.0.1/umd/index.min.js"></script>
   </head>
   <body>
     <div id="root">
       <div id="app">
         <div id="left-column" class="column">
           <ul id="history" class="fill">
-            <li @click="show(h)" v-for="h in history" :key="h">
-              <img :src="h.src" />
-              <div class="image-filename">{{h.name}}</div>
-            </li>
+            <template v-for="h in history" :key="h">
+              <li
+                @click="show(h)"
+                v-if="!images[h].loading || images[h].tookTimeToLoad"
+              >
+                <div
+                  class="loading lds-dual-ring"
+                  v-if="images[h].loading && images[h].tookTimeToLoad"
+                ></div>
+                <img :src="images[h].src" v-else-if="!images[h].loading" />
+                <div class="image-filename">{{images[h].name}}</div>
+              </li>
+            </template>
           </ul>
         </div>
         <div
           class="column fill"
-          :class="[{'ready-to-pick': candidatesCount >= 1}]"
+          :class="[{'ready-to-pick': candidatesCount >= 1, 'image-loading': loadingImage}]"
           id="image-preview"
           v-on="candidatesCount >= 1 ? {click: roll} : {}"
         >
@@ -31,7 +41,7 @@
               any of them.
             </p>
           </template>
-          <template v-else-if="shownItem === null">
+          <template v-else-if="!shownImage">
             <p>
               {{candidatesCount}} image {{candidatesCount >= 2 ? "files": "file"
               }} found.
@@ -42,17 +52,24 @@
           </template>
           <template v-else>
             <div id="image-summary">
-              <div class="image-filename">{{shownItem.name}}</div>
-              <div class="image-location">{{shownItem.path}}</div>
+              <div class="image-filename">{{shownImage.name}}</div>
+              <div class="image-location">{{shownImage.path}}</div>
             </div>
             <div id="image-container">
-              <img :src="shownItem.src" />
+              <div
+                class="loading lds-dual-ring"
+                v-if="shownImage.loading"
+              ></div>
+              <img :src="shownImage.src" v-else />
             </div>
           </template>
         </div>
         <div id="overlay" v-if="dragHovering || loadingDroppedItem">
           <p v-if="dragHovering">Ready to Drop!</p>
-          <p v-if="loadingDroppedItem">Searching for image files...</p>
+          <div v-if="loadingDroppedItem">
+            <div class="loading lds-dual-ring"></div>
+            <p>Searching for image files...</p>
+          </div>
         </div>
       </div>
     </div>

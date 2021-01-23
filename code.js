@@ -22,14 +22,21 @@ function hasImageExt(filename) {
 let dragEventTarget = null;
 let lastPickedIndex = -1;
 const HISTORY_MAX_LENGTH = 32;
+const IMAGE_CACHE_MAX_LENGTH = HISTORY_MAX_LENGTH;
+let imagesCreated = 0;
+const DEBOUNCE_DELAY = 0;
 
 const PickNRollApp = {
   data() {
     return {
       // history of images. newer comes first.
       history: [],
-      // the image currently shown.
-      shownItem: null,
+      // the ID of image currently shown.
+      shownImageId: null,
+      // the images loaded.
+      images: {},
+      // the ID of image user really wants to show.
+      imagePendingToShow: null,
       // candidate images to pick from.
       candidates: null,
       // indicates whether files or directories are being dragged.
@@ -73,8 +80,83 @@ const PickNRollApp = {
     });
   },
   methods: {
-    show(e) {
-      this.shownItem = e;
+    addHistory(item) {
+      // aliasing
+      const h = this.history;
+      // add an item into history.
+      this.history = [
+        item,
+        ...(h.length < HISTORY_MAX_LENGTH ? h : h.slice(0, -1)),
+      ];
+    },
+    async show(imageId, opts) {
+      opts = { addHistory: false, when: Promise.resolve(), ...(opts || {}) };
+
+      this.imagePendingToShow = imageId;
+      if (opts.addHistory) {
+        this.addHistory(imageId);
+      }
+      opts.when.then(() => {
+        if (this.imagePendingToShow !== imageId) {
+          return;
+        }
+        this.shownImageId = imageId;
+        this.imagePendingToShow = null;
+      });
+    },
+    loadImageFile(item) {
+      // assign an unique ID for each load
+      const id = imagesCreated;
+      ++imagesCreated;
+
+      const ids = Object.keys(this.images);
+      if (ids.length >= IMAGE_CACHE_MAX_LENGTH) {
+        // The first come first eliminated for cache capacity
+        const elim = ids
+          .map((e) => parseInt(e, 10))
+          .reduce((a, b) => Math.min(a, b))
+          .toString();
+        delete this.images[elim];
+      }
+
+      this.images[id] = { loading: true, tookTimeToLoad: false };
+      const loadPromise = Promise.all(
+        Object.keys(item).map((k) => {
+          return Promise.resolve(item[k]).then((value) => {
+            this.images[id][k] = value;
+          });
+        })
+      ).then(() => {
+        this.images[id].loading = false;
+      });
+      setTimeout(() => (this.images[id].tookTimeToLoad = true), DEBOUNCE_DELAY);
+
+      return { id, loadPromise };
+    },
+    async showFile(fileEntry, opts) {
+      const item = {
+        path: fileEntry.fullPath,
+        name: fileEntry.name,
+        src: new Promise((resolve) => {
+          setTimeout(() => {
+            fileEntry.file((f) => {
+              const reader = new FileReader();
+              reader.readAsDataURL(f);
+              reader.addEventListener("load", async () => {
+                resolve(reader.result);
+              });
+            });
+          }, 0);
+        }),
+      };
+      const { id, loadPromise } = this.loadImageFile(item);
+      this.show(id, {
+        ...opts,
+        when: Promise.race([
+          new Promise((resolve) => setTimeout(resolve, DEBOUNCE_DELAY)),
+          loadPromise,
+        ]),
+      });
     },
     roll() {
       // aliasing
@@ -91,25 +173,7 @@ const PickNRollApp = {
       lastPickedIndex = index;
 
       const picked = ca[index];
-      picked.file((f) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(f);
-        reader.addEventListener("load", () => {
-          const item = {
-            path: picked.fullPath,
-            name: picked.name,
-            src: reader.result,
-          };
-          this.shownItem = item;
-          const h = this.history;
-          this.history = [
-            item,
-            ...(h.length < HISTORY_MAX_LENGTH
-              ? this.history
-              : this.history.slice(0, -1)),
-          ];
-        });
-      });
+      this.showFile(picked, { addHistory: true });
     },
   },
   computed: {
@@ -118,6 +182,9 @@ const PickNRollApp = {
     },
     itemsDropped() {
       return this.candidates !== null;
+    },
+    shownImage() {
+      return this.shownImageId === null ? null : this.images[this.shownImageId];
     },
   },
 };
