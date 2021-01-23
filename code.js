@@ -22,7 +22,7 @@ function hasImageExt(filename) {
 let dragEventTarget = null;
 let lastPickedIndex = -1;
 const HISTORY_MAX_LENGTH = 32;
-const IMAGE_CACHE_MAX_LENGTH = HISTORY_MAX_LENGTH;
+const IMAGE_CACHE_MAX_LENGTH = HISTORY_MAX_LENGTH + 1;
 let imagesCreated = 0;
 const DEBOUNCE_DELAY = 125;
 let loadTimeTimer;
