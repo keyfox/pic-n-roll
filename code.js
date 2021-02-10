@@ -144,14 +144,27 @@ const PickNRollApp = {
         delete this.images[elim];
       }
 
+      const createObjectURLPromise = new Promise((resolve) => {
+        fileEntry.file((f) => {
+          resolve(URL.createObjectURL(f));
+        });
+      });
+      const imageObjectPromise = createObjectURLPromise.then(
+        (url) =>
+          new Promise((resolve) => {
+            const img = new Image();
+            img.src = url;
+            img.onload = () => resolve(img);
+            return img;
+          })
+      );
+
       const item = {
         path: fileEntry.fullPath,
         name: fileEntry.name,
-        objectUrl: new Promise((resolve) => {
-          fileEntry.file((f) => {
-            resolve(URL.createObjectURL(f));
-          });
-        }),
+        objectUrl: createObjectURLPromise,
+        width: imageObjectPromise.then((img) => img.width),
+        height: imageObjectPromise.then((img) => img.height),
         async destroy() {
           URL.revokeObjectURL(await this.objectUrl);
         },
