@@ -10,7 +10,7 @@
   <body>
     <div id="root">
       <div id="app">
-        <div id="side-column" class="column">
+        <div id="side-column">
           <ul id="history" class="fill">
             <template v-for="h in history" :key="h">
               <li @click="show(h.id)" v-if="images[h.id].ready">
@@ -27,12 +27,12 @@
           </ul>
         </div>
         <div
-          class="column fill"
+          class="fill"
           :class="[{'ready-to-pick': candidatesCount >= 1}]"
           id="main-column"
           v-on="candidatesCount >= 1 ? {click: roll} : {}"
         >
-          <template v-if="shownImage">
+          <div id="image-viewer-screen" v-if="shownImage">
             <div
               id="image-container"
               v-show="shownImageId === lastImageLoaded || loadingTakingTime"
@@ -55,24 +55,26 @@
                 <div class="image-location">{{shownImage.path}}</div>
               </div>
             </template>
-          </template>
-          <template v-else-if="candidatesCount === 0">
-            <p class="emoji-text">📁</p>
-            <p>Drag directories here.</p>
-            <p class="error" v-if="itemsDropped">
-              Some entries have been dropped, but no image files found inside
-              any of them.
-            </p>
-          </template>
-          <template v-else>
-            <p>
-              {{candidatesCount}} image {{candidatesCount >= 2 ? "files": "file"
-              }} found.
-            </p>
-            <p class="emoji-text" id="die-icon">🎲</p>
-            <p>Ready to Pic 'n' Roll!</p>
-            <p>Click the right column to pick an image randomly.</p>
-          </template>
+          </div>
+          <div id="standby-screen" v-else>
+            <template v-if="candidatesCount === 0">
+              <p class="emoji-text">📁</p>
+              <p>Drag directories here.</p>
+              <p class="error" v-if="itemsDropped">
+                Some entries have been dropped, but no image files found inside
+                any of them.
+              </p>
+            </template>
+            <template v-else>
+              <p>
+                {{candidatesCount}} image {{candidatesCount >= 2 ? "files":
+                "file" }} found.
+              </p>
+              <p class="emoji-text" id="die-icon">🎲</p>
+              <p>Ready to Pic 'n' Roll!</p>
+              <p>Click the right column to pick an image randomly.</p>
+            </template>
+          </div>
         </div>
         <div id="overlay" v-if="dragHovering || loadingDroppedItem">
           <p v-if="dragHovering">Ready to Drop!</p>
