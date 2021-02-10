@@ -29,7 +29,7 @@
         <div
           class="column fill"
           :class="[{'ready-to-pick': candidatesCount >= 1}]"
-          id="image-preview"
+          id="main-column"
           v-on="candidatesCount >= 1 ? {click: roll} : {}"
         >
           <template v-if="shownImage">

@@ -83,19 +83,20 @@ ul#history div.image-filename {
   display: inline-block;
 }
 
-/* IMAGE PREVIEW */
+/* MAIN COLUMN */
 
-div#image-preview {
+div#main-column {
   align-items: center;
   justify-content: center;
   padding: 16px;
   color: #30322f;
+  overflow: hidden;
 }
-div#image-preview.ready-to-pick {
+div#main-column.ready-to-pick {
   cursor: pointer;
 }
 
-/* IMAGE PREVIEW - IMAGE SUMMARY */
+/* MAIN COLUMN - IMAGE SUMMARY */
 
 div#image-summary {
   display: inline-block;
@@ -114,7 +115,7 @@ div#image-summary div.image-location {
   font-size: 12px;
 }
 
-/* IMAGE PREVIEW - IMAGE */
+/* MAIN COLUMN - IMAGE */
 
 div#image-container {
   min-width: 0;
@@ -128,12 +129,12 @@ div#image-container img {
   object-fit: contain;
 }
 
-/* IMAGE PREVIEW - GENERAL MESSAGE */
+/* MAIN COLUMN - GENERAL MESSAGE */
 
-div#image-preview p {
+div#main-column p {
   font-size: 24px;
 }
-div#image-preview p.error {
+div#main-column p.error {
   background: tomato;
   color: white;
   display: inline-block;
@@ -141,12 +142,12 @@ div#image-preview p.error {
   font-size: 16px;
   padding: 8px 15px;
 }
-div#image-preview p.emoji-text {
+div#main-column p.emoji-text {
   font-size: 96px;
   display: inline-block;
   margin: 0 auto;
 }
-div#image-preview p#die-icon {
+div#main-column p#die-icon {
   animation: bounce-animation 1s infinite;
   position: relative;
 }
