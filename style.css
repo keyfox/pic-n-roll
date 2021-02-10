@@ -132,6 +132,24 @@ div#image-container img {
   object-fit: contain;
 }
 
+/* IMAGE VIEWER SCREEN - ROLL BUTTON */
+
+button#roll-button {
+  width: 96px;
+  height: 96px;
+  font-size: 64px;
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+button#roll-button:hover {
+  animation: bounce-animation 1s infinite;
+}
+
 /* MAIN COLUMN - STANDBY SCREEN */
 
 div#standby-screen {
@@ -162,23 +180,19 @@ div#standby-screen p.emoji-text {
   margin: 0 auto;
 }
 
-/* TODO: Delete this if not used */
 @keyframes bounce-animation {
   0%,
   100% {
-    top: 0;
     transform: scale(1);
   }
   30% {
-    top: -32px;
-    transform: scale(0.96, 1.04);
+    transform: translate(0, -32px) scale(0.96, 1.04);
   }
   60% {
-    transform: scale(1);
+    transform: translate(0, -32px) scale(1);
   }
   90% {
-    top: 0;
-    transform: scale(1.15, 0.9);
+    transform: translate(0, 0) scale(1.15, 0.9);
   }
 }
 

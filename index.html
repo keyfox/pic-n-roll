@@ -25,12 +25,7 @@
             </template>
           </ul>
         </div>
-        <div
-          class="fill"
-          :class="[{'ready-to-pick': candidatesCount >= 1}]"
-          id="main-column"
-          v-on="candidatesCount >= 1 ? {click: roll} : {}"
-        >
+        <div class="fill" id="main-column">
           <div id="image-viewer-screen" v-if="shownImage">
             <div
               id="image-container"
@@ -50,6 +45,7 @@
                 <div class="image-filename">{{shownImage.name}}</div>
                 <div class="image-location">{{shownImage.path}}</div>
               </div>
+              <button id="roll-button" @click="roll">🎲</button>
             </template>
           </div>
           <div id="standby-screen" v-else>
