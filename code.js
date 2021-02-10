@@ -51,6 +51,8 @@ const PickNRollApp = {
       // indicates whether the user is actively using the app.
       userActive: false,
       imageScalePercentage: 100,
+      mainColumnWidth: null,
+      mainColumnHeight: null,
     };
   },
   mounted() {
@@ -99,6 +101,12 @@ const PickNRollApp = {
       };
       window.addEventListener("mousemove", activate);
       window.addEventListener("mousedown", activate);
+    })();
+    (() => {
+      const mainColumn = this.$refs.mainColumn;
+      const observer = new ResizeObserver(this.updateMainColumnDimension);
+      observer.observe(mainColumn);
+      this.updateMainColumnDimension();
     })();
   },
   methods: {
@@ -213,6 +221,11 @@ const PickNRollApp = {
       const nextLevel = level + -ev.deltaY * 0.01;
 
       this.imageScalePercentage = Math.pow(T, nextLevel);
+    },
+    updateMainColumnDimension() {
+      const el = this.$refs.mainColumn;
+      this.mainColumnWidth = el.clientWidth;
+      this.mainColumnHeight = el.clientHeight;
     },
   },
   computed: {
