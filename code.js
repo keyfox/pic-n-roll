@@ -210,6 +210,9 @@ const PickNRollApp = {
         }px) scale(${this.imageScalePercentage / 100.0})`,
       };
     },
+    shownImageLoaded() {
+      return this.shownImageId === this.lastImageLoaded;
+    },
   },
   watch: {
     shownImageId(newValue, oldValue) {
