@@ -47,8 +47,6 @@ const PickNRollApp = {
       dragHovering: false,
       // indicates whether the app is searching for image files.
       loadingDroppedItem: false,
-      // whether to expand image
-      expandImage: false,
     };
   },
   mounted() {

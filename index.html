@@ -24,12 +24,6 @@
               </li>
             </template>
           </ul>
-          <div id="config">
-            <label
-              ><input type="checkbox" v-model="expandImage" />Expand
-              image</label
-            >
-          </div>
         </div>
         <div
           class="column fill"
@@ -61,7 +55,6 @@
             </div>
             <div
               id="image-container"
-              :class="[expandImage ? 'expand-on' : 'expand-off']"
               v-show="shownImageId === lastImageLoaded || loadingTakingTime"
             >
               <img
