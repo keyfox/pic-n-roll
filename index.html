@@ -5,6 +5,7 @@
     <title>Pic 'n' roll</title>
     <link rel="stylesheet" href="./style.css" />
     <script src="https://unpkg.com/vue@3.0.5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/throttle-debounce@3.0.1/umd/index.js"></script>
   </head>
   <body>
     <div id="root">
@@ -32,10 +33,6 @@
           v-on="candidatesCount >= 1 ? {click: roll} : {}"
         >
           <template v-if="shownImage">
-            <div id="image-summary" v-show="shownImageId === lastImageLoaded">
-              <div class="image-filename">{{shownImage.name}}</div>
-              <div class="image-location">{{shownImage.path}}</div>
-            </div>
             <div
               id="image-container"
               v-show="shownImageId === lastImageLoaded || loadingTakingTime"
@@ -51,6 +48,12 @@
                 v-if="shownImageId !== lastImageLoaded"
               ></div>
             </div>
+            <template v-if="userActive">
+              <div id="image-summary" v-show="shownImageId === lastImageLoaded">
+                <div class="image-filename">{{shownImage.name}}</div>
+                <div class="image-location">{{shownImage.path}}</div>
+              </div>
+            </template>
           </template>
           <template v-else-if="candidatesCount === 0">
             <p class="emoji-text">📁</p>

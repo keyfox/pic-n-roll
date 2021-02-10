@@ -26,6 +26,7 @@ const IMAGE_CACHE_MAX_LENGTH = HISTORY_MAX_LENGTH + 1;
 let imagesCreated = 0;
 const DEBOUNCE_DELAY = 125;
 let loadTimeTimer;
+let lastMouseMove = 0;
 
 const PickNRollApp = {
   data() {
@@ -47,6 +48,8 @@ const PickNRollApp = {
       dragHovering: false,
       // indicates whether the app is searching for image files.
       loadingDroppedItem: false,
+      // indicates whether the user is actively using the app.
+      userActive: false,
     };
   },
   mounted() {
@@ -82,6 +85,19 @@ const PickNRollApp = {
         this.dragHovering = false;
       }
     });
+    (() => {
+      const inactivityDebounce = throttleDebounce.debounce(3000, false, () => {
+        this.userActive = false;
+      });
+      const activate = () => {
+        if (!this.userActive) {
+          this.userActive = true;
+        }
+        inactivityDebounce();
+      };
+      window.addEventListener("mousemove", activate);
+      window.addEventListener("mousedown", activate);
+    })();
   },
   methods: {
     addHistory(item) {
