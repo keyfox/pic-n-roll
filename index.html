@@ -10,7 +10,7 @@
   <body>
     <div id="root">
       <div id="app">
-        <div id="left-column" class="column">
+        <div id="side-column" class="column">
           <ul id="history" class="fill">
             <template v-for="h in history" :key="h">
               <li @click="show(h.id)" v-if="images[h.id].ready">

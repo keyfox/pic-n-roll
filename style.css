@@ -41,14 +41,14 @@ div.image-location {
   user-select: text;
 }
 
-/* LEFT COLUMN */
+/* SIDE COLUMN */
 
-div#left-column {
+div#side-column {
   background: #5c4a51;
   width: 288px;
 }
 
-/* LEFT COLUMN - HISTORY */
+/* SIDE COLUMN - HISTORY */
 ul#history {
   flex: 1;
   overflow-y: scroll;
