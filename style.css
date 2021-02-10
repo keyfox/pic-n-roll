@@ -97,6 +97,9 @@ div#image-viewer-screen {
   justify-content: center;
   width: 100%;
   height: 100%;
+  /* TODO: use `overflow: overlay` to decrease distraction,
+           showing/hiding scrollbars also needed though */
+  overflow: auto;
 }
 
 /* IMAGE VIEWER SCREEN - IMAGE SUMMARY */

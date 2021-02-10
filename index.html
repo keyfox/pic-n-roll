@@ -6,6 +6,11 @@
     <link rel="stylesheet" href="./style.css" />
     <script src="https://unpkg.com/vue@3.0.5"></script>
     <script src="https://cdn.jsdelivr.net/npm/throttle-debounce@3.0.1/umd/index.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/dragscroll/0.0.8/dragscroll.min.js"
+      integrity="sha512-/ncZdOhQm5pgj5KHy720Ck7XF5RzYK6rtUsLNnGcitXrKT3wUYzTrPlOSG7SdL2kDzkuLEOFvrQRyllcZkeAlg=="
+      crossorigin="anonymous"
+    ></script>
   </head>
   <body>
     <div id="root">
@@ -26,7 +31,12 @@
           </ul>
         </div>
         <div class="fill" id="main-column">
-          <div id="image-viewer-screen" v-if="shownImage">
+          <div
+            id="image-viewer-screen"
+            v-if="shownImage"
+            @wheel.prevent="handleWheelOnImage"
+            class="dragscroll"
+          >
             <div
               id="image-container"
               v-show="shownImageLoaded || loadingTakingTime"

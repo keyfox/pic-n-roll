@@ -51,8 +51,6 @@ const PickNRollApp = {
       // indicates whether the user is actively using the app.
       userActive: false,
       imageScalePercentage: 100,
-      imageTranslateX: 0,
-      imageTranslateY: 0,
     };
   },
   mounted() {
@@ -127,6 +125,7 @@ const PickNRollApp = {
       }
       this.shownImageId = imageId;
       this.imagePendingToShow = null;
+      this.imageScalePercentage = 100;
     },
     async loadImageFile(fileEntry) {
       // assign an unique ID for each load
@@ -194,6 +193,14 @@ const PickNRollApp = {
       const picked = ca[index];
       this.showFile(picked, { addHistory: true });
     },
+    handleWheelOnImage(ev) {
+      const T = 1.1;
+      const curr = this.imageScalePercentage;
+      const level = Math.log(curr) / Math.log(T);
+      const nextLevel = level + -ev.deltaY * 0.01;
+
+      this.imageScalePercentage = Math.pow(T, nextLevel);
+    },
   },
   computed: {
     candidatesCount() {
@@ -207,9 +214,7 @@ const PickNRollApp = {
     },
     imageTransform() {
       return {
-        transform: `translate(${this.imageTranslateX}px, ${
-          this.imageTranslateY
-        }px) scale(${this.imageScalePercentage / 100.0})`,
+        transform: `scale(${this.imageScalePercentage / 100})`,
       };
     },
     shownImageLoaded() {
