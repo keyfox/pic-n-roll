@@ -119,7 +119,7 @@ const PickNRollApp = {
       if (opts.addHistory) {
         this.addHistory({ id: imageId, loaded: false });
       }
-      await this.images[imageId].readyPromise;
+      await this.images[imageId].readyToLoadPromise;
 
       if (this.imagePendingToShow !== imageId) {
         return;
@@ -158,15 +158,16 @@ const PickNRollApp = {
       };
 
       this.images[id] = {
-        ready: false,
+        readyToLoad: false,
       };
-      this.images[id].readyPromise = Promise.all(
+      this.images[id].readyToLoadPromise = Promise.all(
         Object.keys(item).map(async (k) => {
+          // change `readyToLoad` property to `true` once all values in `item` is determined
           const value = await Promise.resolve(item[k]);
           this.images[id][k] = value;
         })
       ).then(() => {
-        this.images[id].ready = true;
+        this.images[id].readyToLoad = true;
       });
 
       return id;

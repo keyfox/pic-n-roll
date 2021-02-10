@@ -13,11 +13,10 @@
         <div id="side-column">
           <ul id="history" class="fill">
             <template v-for="h in history" :key="h">
-              <li @click="show(h.id)" v-if="images[h.id].ready">
+              <li @click="show(h.id)" v-if="images[h.id].readyToLoad">
                 <img
                   :src="images[h.id].objectUrl"
                   v-show="h.loaded"
-                  v-if="images[h.id].ready"
                   @load="h.loaded = true"
                 />
                 <div class="loading lds-dual-ring" v-if="!h.loaded"></div>
@@ -39,7 +38,7 @@
             >
               <img
                 :src="shownImage.objectUrl"
-                v-if="shownImage.ready"
+                v-if="shownImage.readyToLoad"
                 v-show="shownImageLoaded"
                 @load="lastImageLoaded = shownImageId"
                 v-bind:style="imageTransform"
