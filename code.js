@@ -50,6 +50,9 @@ const PickNRollApp = {
       loadingDroppedItem: false,
       // indicates whether the user is actively using the app.
       userActive: false,
+      imageScalePercentage: 100,
+      imageTranslateX: 0,
+      imageTranslateY: 0,
     };
   },
   mounted() {
@@ -199,6 +202,13 @@ const PickNRollApp = {
     },
     shownImage() {
       return this.shownImageId === null ? null : this.images[this.shownImageId];
+    },
+    imageTransform() {
+      return {
+        transform: `translate(${this.imageTranslateX}px, ${
+          this.imageTranslateY
+        }px) scale(${this.imageScalePercentage / 100.0})`,
+      };
     },
   },
   watch: {
