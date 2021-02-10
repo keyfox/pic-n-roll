@@ -53,23 +53,12 @@
             </template>
           </div>
           <div id="standby-screen" v-else>
-            <template v-if="candidatesCount === 0">
-              <p class="emoji-text">📁</p>
-              <p>Drag directories here.</p>
-              <p class="error" v-if="itemsDropped">
-                Some entries have been dropped, but no image files found inside
-                any of them.
-              </p>
-            </template>
-            <template v-else>
-              <p>
-                {{candidatesCount}} image {{candidatesCount >= 2 ? "files":
-                "file" }} found.
-              </p>
-              <p class="emoji-text" id="die-icon">🎲</p>
-              <p>Ready to Pic 'n' Roll!</p>
-              <p>Click the right column to pick an image randomly.</p>
-            </template>
+            <p class="emoji-text">📁</p>
+            <p>Drag directories here.</p>
+            <p class="error" v-if="itemsDropped">
+              Some entries have been dropped, but no image files found inside
+              any of them.
+            </p>
           </div>
         </div>
         <div id="overlay" v-if="dragHovering || loadingDroppedItem">

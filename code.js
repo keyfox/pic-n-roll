@@ -81,6 +81,7 @@ const PickNRollApp = {
       lastPickedIndex = -1;
       this.loadingDroppedItem = false;
       this.shownItem = null;
+      this.roll();
     });
     window.addEventListener("dragleave", (ev) => {
       ev.preventDefault();

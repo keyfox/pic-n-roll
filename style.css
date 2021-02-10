@@ -161,10 +161,8 @@ div#standby-screen p.emoji-text {
   display: inline-block;
   margin: 0 auto;
 }
-div#standby-screen p#die-icon {
-  animation: bounce-animation 1s infinite;
-  position: relative;
-}
+
+/* TODO: Delete this if not used */
 @keyframes bounce-animation {
   0%,
   100% {
