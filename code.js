@@ -53,6 +53,13 @@ const PickNRollApp = {
       imageScalePercentage: 100,
       mainColumnWidth: null,
       mainColumnHeight: null,
+      // Where the drag event for moving image has been fired (at screen position)
+      imageMoveEventSrcPos: null,
+      // the position of image just before the image movement
+      imageMoveFromPos: null,
+      // where the image object should be placed; (0, 0) is the center of main column
+      imageTop: 0,
+      imageLeft: 0,
     };
   },
   mounted() {
@@ -121,19 +128,32 @@ const PickNRollApp = {
     },
     async show(imageId, opts) {
       opts = { addHistory: false, ...(opts || {}) };
+      const img = this.images[imageId];
 
       this.imagePendingToShow = imageId;
       if (opts.addHistory) {
         this.addHistory({ id: imageId, loaded: false });
       }
-      await this.images[imageId].readyToLoadPromise;
+      await img.readyToLoadPromise;
 
       if (this.imagePendingToShow !== imageId) {
         return;
       }
       this.shownImageId = imageId;
       this.imagePendingToShow = null;
-      this.imageScalePercentage = 100;
+
+      // set scale to fit the window
+      const ratio = Math.min(
+        this.mainColumnWidth / img.width,
+        this.mainColumnHeight / img.height
+      );
+      this.imageScalePercentage = ratio * 100;
+      this.imageLeft = 0;
+      this.imageTop = 0;
+
+      // tell `dragscroll` library to find targets
+      await this.$nextTick();
+      dragscroll.reset();
     },
     async loadImageFile(fileEntry) {
       // assign an unique ID for each load
@@ -227,6 +247,31 @@ const PickNRollApp = {
       this.mainColumnWidth = el.clientWidth;
       this.mainColumnHeight = el.clientHeight;
     },
+    _moveImageWithDrag(ev) {
+      const { x: srcX, y: srcY } = this.imageMoveEventSrcPos;
+      const { x: fromX, y: fromY } = this.imageMoveFromPos;
+      const diffX = ev.screenX - srcX;
+      const diffY = ev.screenY - srcY;
+      this.imageLeft = fromX + diffX;
+      this.imageTop = fromY + diffY;
+    },
+    moveImageMouseDown(ev) {
+      this.imageMoveEventSrcPos = { x: ev.screenX, y: ev.screenY };
+      this.imageMoveFromPos = { x: this.imageLeft, y: this.imageTop };
+    },
+    moveImageMouseMove(ev) {
+      if (!this.imageMoveEventSrcPos) {
+        return;
+      }
+      this._moveImageWithDrag(ev);
+    },
+    moveImageMouseUp(ev) {
+      if (!this.imageMoveEventSrcPos) {
+        return;
+      }
+      this._moveImageWithDrag(ev);
+      this.imageMoveEventSrcPos = null;
+    },
   },
   computed: {
     candidatesCount() {
@@ -240,7 +285,11 @@ const PickNRollApp = {
     },
     imageTransform() {
       return {
-        transform: `scale(${this.imageScalePercentage / 100})`,
+        top: `calc(50% + ${this.imageTop}px)`,
+        left: `calc(50% + ${this.imageLeft}px)`,
+        transform: `translate(-50%, -50%) scale(${
+          this.imageScalePercentage / 100
+        })`,
       };
     },
     shownImageLoaded() {

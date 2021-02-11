@@ -33,24 +33,31 @@
         <div class="fill" id="main-column" ref="mainColumn">
           <div
             id="image-viewer-screen"
-            v-if="shownImage"
+            v-show="shownImage"
             @wheel.prevent="handleWheelOnImage"
-            class="dragscroll"
           >
             <div
               id="image-container"
               v-show="shownImageLoaded || loadingTakingTime"
+              @mousedown="moveImageMouseDown"
+              @mousemove="moveImageMouseMove"
+              @mouseup="moveImageMouseUp"
             >
-              <img
-                :src="shownImage.objectUrl"
-                v-if="shownImage.readyToLoad"
-                v-show="shownImageLoaded"
-                @load="lastImageLoaded = shownImageId"
-                v-bind:style="imageTransform"
-              />
-              <div class="loading lds-dual-ring" v-if="!shownImageLoaded"></div>
+              <template v-if="shownImage">
+                <img
+                  :src="shownImage.objectUrl"
+                  v-if="shownImage.readyToLoad"
+                  v-show="shownImageLoaded"
+                  @load="lastImageLoaded = shownImageId"
+                  v-bind:style="imageTransform"
+                />
+                <div
+                  class="loading lds-dual-ring"
+                  v-if="!shownImageLoaded"
+                ></div>
+              </template>
             </div>
-            <template v-if="userActive">
+            <template v-if="shownImage && userActive">
               <div id="image-summary" v-show="shownImageLoaded">
                 <div class="image-filename">{{shownImage.name}}</div>
                 <div class="image-location">{{shownImage.path}}</div>
@@ -58,7 +65,7 @@
               <button id="roll-button" @click="roll">🎲</button>
             </template>
           </div>
-          <div id="standby-screen" v-else>
+          <div id="standby-screen" v-if="!shownImage">
             <p class="emoji-text">📁</p>
             <p>Drag directories here.</p>
             <p class="error" v-if="itemsDropped">
