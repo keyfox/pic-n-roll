@@ -242,6 +242,7 @@ const PickNRollApp = {
     handleWheelOnImage(ev) {
       const T = 1.1;
       const curr = this.imageScalePercentage;
+      const ratio = curr / 100;
       const level = Math.log(curr) / Math.log(T);
       const nextLevel = level + -ev.deltaY * 0.01;
       const next = Math.min(Math.max(10, Math.pow(T, nextLevel)), 400);
@@ -261,8 +262,17 @@ const PickNRollApp = {
       } = this;
       evX -= imageViewerScreenWidth / 2;
       evY -= imageViewerScreenHeight / 2;
-      const anchorX = evX - currImageX;
-      const anchorY = evY - currImageY;
+      const { width: imageWidth, height: imageHeight } = this.shownImage;
+      const scaledImageWidthHalf = (imageWidth * ratio) / 2;
+      const scaledImageHeightHalf = (imageHeight * ratio) / 2;
+      const anchorX = Math.max(
+        -scaledImageWidthHalf,
+        Math.min(evX - currImageX, scaledImageWidthHalf)
+      );
+      const anchorY = Math.max(
+        -scaledImageHeightHalf,
+        Math.min(evY - currImageY, scaledImageHeightHalf)
+      );
 
       this.imageX -= anchorX * (next / curr - 1);
       this.imageY -= anchorY * (next / curr - 1);
