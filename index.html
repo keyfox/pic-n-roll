@@ -30,11 +30,12 @@
             </template>
           </ul>
         </div>
-        <div class="fill" id="main-column" ref="mainColumn">
+        <div class="fill" id="main-column">
           <div
             id="image-viewer-screen"
-            v-show="shownImage"
-            @wheel.prevent="handleWheelOnImage"
+            v-bind:style="{visibility: shownImage ? 'visible' : 'hidden'}"
+            @wheel.capture.prevent="handleWheelOnImage"
+            ref="imageViewerScreen"
           >
             <div
               id="image-container"

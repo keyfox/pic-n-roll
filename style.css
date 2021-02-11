@@ -84,6 +84,7 @@ ul#history div.image-filename {
 
 div#main-column {
   overflow: hidden;
+  position: relative;
 }
 div#main-column.ready-to-pick {
   cursor: pointer;
@@ -92,12 +93,14 @@ div#main-column.ready-to-pick {
 /* MAIN COLUMN - IMAGE VIEWER SCREEN */
 
 div#image-viewer-screen {
-  position: relative;
   display: flex;
-  align-items: center;
   justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
+  text-align: center;
 }
 
 /* IMAGE VIEWER SCREEN - IMAGE SUMMARY */

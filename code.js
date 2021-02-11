@@ -51,15 +51,15 @@ const PickNRollApp = {
       // indicates whether the user is actively using the app.
       userActive: false,
       imageScalePercentage: 100,
-      mainColumnWidth: null,
-      mainColumnHeight: null,
+      imageViewerScreenWidth: null,
+      imageViewerScreenHeight: null,
       // Where the drag event for moving image has been fired (at screen position)
       imageMoveEventSrcPos: null,
       // the position of image just before the image movement
       imageMoveFromPos: null,
       // where the image object should be placed; (0, 0) is the center of main column
-      imageTop: 0,
-      imageLeft: 0,
+      imageY: 0,
+      imageX: 0,
     };
   },
   mounted() {
@@ -110,10 +110,15 @@ const PickNRollApp = {
       window.addEventListener("mousedown", activate);
     })();
     (() => {
-      const mainColumn = this.$refs.mainColumn;
-      const observer = new ResizeObserver(this.updateMainColumnDimension);
-      observer.observe(mainColumn);
-      this.updateMainColumnDimension();
+      const updateImageViewerScreenDimension = () => {
+        const el = this.$refs.imageViewerScreen;
+        this.imageViewerScreenWidth = el.clientWidth;
+        this.imageViewerScreenHeight = el.clientHeight;
+      };
+      const el = this.$refs.imageViewerScreen;
+      const observer = new ResizeObserver(updateImageViewerScreenDimension);
+      observer.observe(el);
+      updateImageViewerScreenDimension();
     })();
   },
   methods: {
@@ -144,12 +149,12 @@ const PickNRollApp = {
 
       // set scale to fit the window
       const ratio = Math.min(
-        this.mainColumnWidth / img.width,
-        this.mainColumnHeight / img.height
+        this.imageViewerScreenWidth / img.width,
+        this.imageViewerScreenHeight / img.height
       );
       this.imageScalePercentage = ratio * 100;
-      this.imageLeft = 0;
-      this.imageTop = 0;
+      this.imageX = 0;
+      this.imageY = 0;
 
       // tell `dragscroll` library to find targets
       await this.$nextTick();
@@ -239,28 +244,41 @@ const PickNRollApp = {
       const curr = this.imageScalePercentage;
       const level = Math.log(curr) / Math.log(T);
       const nextLevel = level + -ev.deltaY * 0.01;
+      const next = Math.min(Math.max(10, Math.pow(T, nextLevel)), 400);
 
-      this.imageScalePercentage = Math.min(
-        Math.max(10, Math.pow(T, nextLevel)),
-        400
-      );
-    },
-    updateMainColumnDimension() {
-      const el = this.$refs.mainColumn;
-      this.mainColumnWidth = el.clientWidth;
-      this.mainColumnHeight = el.clientHeight;
+      const {
+        left: containerX,
+        top: containerY,
+      } = this.$refs.imageViewerScreen.getBoundingClientRect();
+      let evX = ev.clientX - containerX;
+      let evY = ev.clientY - containerY;
+
+      const {
+        imageX: currImageX,
+        imageY: currImageY,
+        imageViewerScreenWidth,
+        imageViewerScreenHeight,
+      } = this;
+      evX -= imageViewerScreenWidth / 2;
+      evY -= imageViewerScreenHeight / 2;
+      const anchorX = evX - currImageX;
+      const anchorY = evY - currImageY;
+
+      this.imageX -= anchorX * (next / curr - 1);
+      this.imageY -= anchorY * (next / curr - 1);
+      this.imageScalePercentage = next;
     },
     _moveImageWithDrag(ev) {
       const { x: srcX, y: srcY } = this.imageMoveEventSrcPos;
       const { x: fromX, y: fromY } = this.imageMoveFromPos;
       const diffX = ev.screenX - srcX;
       const diffY = ev.screenY - srcY;
-      this.imageLeft = fromX + diffX;
-      this.imageTop = fromY + diffY;
+      this.imageX = fromX + diffX;
+      this.imageY = fromY + diffY;
     },
     moveImageStart(ev) {
       this.imageMoveEventSrcPos = { x: ev.screenX, y: ev.screenY };
-      this.imageMoveFromPos = { x: this.imageLeft, y: this.imageTop };
+      this.imageMoveFromPos = { x: this.imageX, y: this.imageY };
     },
     moveImageUpdate(ev) {
       if (!this.imageMoveEventSrcPos) {
@@ -288,8 +306,8 @@ const PickNRollApp = {
     },
     imageTransform() {
       return {
-        top: `calc(50% + ${this.imageTop}px)`,
-        left: `calc(50% + ${this.imageLeft}px)`,
+        top: `calc(50% + ${this.imageY}px)`,
+        left: `calc(50% + ${this.imageX}px)`,
         transform: `translate(-50%, -50%) scale(${
           this.imageScalePercentage / 100
         })`,
