@@ -59,7 +59,7 @@
                 ></div>
               </template>
             </div>
-            <template v-if="shownImage && userActive">
+            <template v-if="shownImage && controlsShown">
               <div id="image-summary" v-show="shownImageLoaded">
                 <div class="image-filename">{{shownImage.name}}</div>
                 <div class="image-location">{{shownImage.path}}</div>

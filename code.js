@@ -316,6 +316,9 @@ const PickNRollApp = {
     shownImageLoaded() {
       return this.shownImageId === this.lastImageLoaded;
     },
+    controlsShown() {
+      return this.userActive && !this.imageMoveEventSrcPos;
+    },
   },
   watch: {
     shownImageId(newValue, oldValue) {
