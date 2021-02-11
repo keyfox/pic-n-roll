@@ -33,6 +33,7 @@ const PickNRollApp = {
     return {
       // history of images. newer comes first.
       history: [],
+      historyIndex: null,
       // the ID of image currently shown.
       shownImageId: null,
       // the last image which completely loaded
@@ -130,6 +131,7 @@ const PickNRollApp = {
         item,
         ...(h.length < HISTORY_MAX_LENGTH ? h : h.slice(0, -1)),
       ];
+      this.historyIndex = 0;
     },
     async show(imageId, opts) {
       opts = { addHistory: false, ...(opts || {}) };
@@ -159,6 +161,10 @@ const PickNRollApp = {
       // tell `dragscroll` library to find targets
       await this.$nextTick();
       dragscroll.reset();
+    },
+    showFromHistory(historyIndex) {
+      this.show(this.history[historyIndex].id, { addHistory: false });
+      this.historyIndex = historyIndex;
     },
     async loadImageFile(fileEntry) {
       // assign an unique ID for each load
@@ -328,6 +334,9 @@ const PickNRollApp = {
     },
     controlsShown() {
       return this.userActive && !this.imageMoveEventSrcPos;
+    },
+    prevHistoryAvailable() {
+      return this.historyIndex + 1 < this.history.length;
     },
   },
   watch: {

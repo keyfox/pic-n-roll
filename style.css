@@ -65,6 +65,9 @@ ul#history li {
   padding: 16px;
   text-align: center;
 }
+ul#history li.shown img {
+  outline: 4px white solid;
+}
 ul#history li:hover {
   background: #966;
 }
@@ -73,7 +76,7 @@ ul#history img {
   max-width: 100%;
   max-height: 192px;
   min-height: 96px;
-  margin: 0 auto 4px;
+  margin: 0 auto 8px;
 }
 ul#history div.image-filename {
   font-size: 12px;
@@ -135,20 +138,49 @@ div#image-container img {
 
 /* IMAGE VIEWER SCREEN - ROLL BUTTON */
 
-button#roll-button {
+div.image-switchers {
+  position: absolute;
+  display: flex;
+  width: 128px;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+div.image-switchers.left {
+  left: 0;
+}
+div.image-switchers.right {
+  right: 0;
+}
+div.image-switchers button {
   width: 96px;
   height: 96px;
-  font-size: 64px;
-  position: absolute;
-  bottom: 24px;
-  right: 24px;
-  background: transparent;
+  border: 0;
+  background: rgba(0, 0, 0, 0.7);
   border: none;
-  outline: none;
+  outline: 1px transparent solid;
+  margin: 24px 0;
+}
+div.image-switchers button:not(:disabled):hover {
+  outline: 1px #888 solid;
   cursor: pointer;
 }
-button#roll-button:hover {
+div.image-switchers button .icon {
+  font-size: 48px;
+}
+div.image-switchers button .label {
+  font-size: 12px;
+  color: white;
+}
+
+button#roll-button:hover .icon {
+  display: inline-block;
   animation: bounce-animation 1s infinite;
+}
+button#roll-button:hover,
+button#roll-button:hover * {
+  animation: rainbow-coloring-animation 1s infinite;
 }
 
 /* MAIN COLUMN - STANDBY SCREEN */
@@ -194,6 +226,33 @@ div#standby-screen p.emoji-text {
   }
   90% {
     transform: translate(0, 0) scale(1.15, 0.9);
+  }
+}
+@keyframes rainbow-coloring-animation {
+  100%,
+  0% {
+    color: rgb(255, 0, 0);
+    outline-color: rgb(255, 0, 0);
+  }
+  16% {
+    color: rgb(255, 255, 0);
+    outline-color: rgb(255, 255, 0);
+  }
+  33% {
+    color: rgb(0, 255, 0);
+    outline-color: rgb(0, 255, 0);
+  }
+  50% {
+    color: rgb(0, 255, 255);
+    outline-color: rgb(0, 255, 255);
+  }
+  66% {
+    color: rgb(0, 0, 255);
+    outline-color: rgb(0, 0, 255);
+  }
+  83% {
+    color: rgb(255, 0, 255);
+    outline-color: rgb(255, 0, 255);
   }
 }
 

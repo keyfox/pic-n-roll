@@ -17,8 +17,12 @@
       <div id="app" v-on:dragstart.prevent>
         <div id="side-column">
           <ul id="history" class="fill">
-            <template v-for="h in history" :key="h">
-              <li @click="show(h.id)" v-if="images[h.id].readyToLoad">
+            <template v-for="(h, i) in history" :key="h">
+              <li
+                @click="showFromHistory(i)"
+                v-if="images[h.id].readyToLoad"
+                v-bind:class="{shown: historyIndex === i}"
+              >
                 <img
                   :src="images[h.id].objectUrl"
                   v-show="h.loaded"
@@ -64,7 +68,31 @@
                 <div class="image-filename">{{shownImage.name}}</div>
                 <div class="image-location">{{shownImage.path}}</div>
               </div>
-              <button id="roll-button" @click="roll">🎲</button>
+              <div class="image-switchers left">
+                <button
+                  id="prev-image-button"
+                  v-if="history.length >= 2"
+                  @click="showFromHistory(this.historyIndex + 1)"
+                  v-bind:disabled="!prevHistoryAvailable"
+                >
+                  <div class="icon">⏮</div>
+                  <div class="label">Back</div>
+                </button>
+              </div>
+              <div class="image-switchers right">
+                <button id="roll-button" @click="roll">
+                  <div class="icon">🎲</div>
+                  <div class="label">Roll!</div>
+                </button>
+                <button
+                  id="next-image-button"
+                  v-if="historyIndex > 0"
+                  @click="showFromHistory(this.historyIndex - 1)"
+                >
+                  <div class="icon">⏭</div>
+                  <div class="label">Next</div>
+                </button>
+              </div>
             </template>
           </div>
           <div id="standby-screen" v-if="!shownImage">
