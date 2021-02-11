@@ -39,9 +39,10 @@
             <div
               id="image-container"
               v-show="shownImageLoaded || loadingTakingTime"
-              @mousedown="moveImageMouseDown"
-              @mousemove="moveImageMouseMove"
-              @mouseup="moveImageMouseUp"
+              @mousedown="moveImageStart"
+              @mousemove="moveImageUpdate"
+              @mouseup="moveImageEnd"
+              @mouseout="moveImageEnd"
             >
               <template v-if="shownImage">
                 <img

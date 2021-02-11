@@ -258,17 +258,17 @@ const PickNRollApp = {
       this.imageLeft = fromX + diffX;
       this.imageTop = fromY + diffY;
     },
-    moveImageMouseDown(ev) {
+    moveImageStart(ev) {
       this.imageMoveEventSrcPos = { x: ev.screenX, y: ev.screenY };
       this.imageMoveFromPos = { x: this.imageLeft, y: this.imageTop };
     },
-    moveImageMouseMove(ev) {
+    moveImageUpdate(ev) {
       if (!this.imageMoveEventSrcPos) {
         return;
       }
       this._moveImageWithDrag(ev);
     },
-    moveImageMouseUp(ev) {
+    moveImageEnd(ev) {
       if (!this.imageMoveEventSrcPos) {
         return;
       }
