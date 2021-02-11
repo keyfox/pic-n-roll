@@ -14,7 +14,7 @@
   </head>
   <body>
     <div id="root">
-      <div id="app" v-on:dragstart.prevent>
+      <div id="app" v-on:dragstart.prevent @mouseleave="userActive=false">
         <div id="side-column">
           <ul id="history" class="fill">
             <template v-for="(h, i) in history" :key="h">
