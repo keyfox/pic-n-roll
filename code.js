@@ -98,7 +98,7 @@ const PickNRollApp = {
       }
     });
     (() => {
-      const inactivityDebounce = throttleDebounce.debounce(3000, false, () => {
+      const inactivityDebounce = throttleDebounce.debounce(1000, false, () => {
         this.userActive = false;
       });
       const activate = () => {
