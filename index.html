@@ -40,29 +40,25 @@
             v-bind:style="{visibility: shownImage ? 'visible' : 'hidden'}"
             @wheel.capture.prevent="handleWheelOnImage"
             ref="imageViewerScreen"
+            @mousedown="moveImageStart"
+            @mousemove="moveImageUpdate"
+            @mouseup="moveImageEnd"
+            @mouseleave="moveImageEnd"
           >
-            <div
-              id="image-container"
+            <template
+              v-if="shownImage"
               v-show="shownImageLoaded || loadingTakingTime"
-              @mousedown="moveImageStart"
-              @mousemove="moveImageUpdate"
-              @mouseup="moveImageEnd"
-              @mouseleave="moveImageEnd"
             >
-              <template v-if="shownImage">
-                <img
-                  :src="shownImage.objectUrl"
-                  v-if="shownImage.readyToLoad"
-                  v-show="shownImageLoaded"
-                  @load="lastImageLoaded = shownImageId"
-                  v-bind:style="imageTransform"
-                />
-                <div
-                  class="loading lds-dual-ring"
-                  v-if="!shownImageLoaded"
-                ></div>
-              </template>
-            </div>
+              <img
+                :src="shownImage.objectUrl"
+                v-if="shownImage.readyToLoad"
+                v-show="shownImageLoaded"
+                @load="lastImageLoaded = shownImageId"
+                v-bind:style="imageTransform"
+                id="picked-image"
+              />
+              <div class="loading lds-dual-ring" v-if="!shownImageLoaded"></div>
+            </template>
             <template v-if="shownImage && controlsShown">
               <div id="image-summary" v-show="shownImageLoaded">
                 <div class="image-filename">{{shownImage.name}}</div>
@@ -72,6 +68,7 @@
                 <button
                   id="prev-image-button"
                   v-if="history.length >= 2"
+                  @mousedown.stop
                   @click="showFromHistory(this.historyIndex + 1)"
                   v-bind:disabled="!prevHistoryAvailable"
                 >
@@ -80,13 +77,14 @@
                 </button>
               </div>
               <div class="image-switchers right">
-                <button id="roll-button" @click="roll">
+                <button id="roll-button" @mousedown.stop @click="roll">
                   <div class="icon">🎲</div>
                   <div class="label">Roll!</div>
                 </button>
                 <button
                   id="next-image-button"
                   v-if="historyIndex > 0"
+                  @mousedown.stop
                   @click="showFromHistory(this.historyIndex - 1)"
                 >
                   <div class="icon">⏭</div>
