@@ -47,7 +47,7 @@
               @mousedown="moveImageStart"
               @mousemove="moveImageUpdate"
               @mouseup="moveImageEnd"
-              @mouseout="moveImageEnd"
+              @mouseleave="moveImageEnd"
             >
               <template v-if="shownImage">
                 <img
