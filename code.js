@@ -240,7 +240,10 @@ const PickNRollApp = {
       const level = Math.log(curr) / Math.log(T);
       const nextLevel = level + -ev.deltaY * 0.01;
 
-      this.imageScalePercentage = Math.pow(T, nextLevel);
+      this.imageScalePercentage = Math.min(
+        Math.max(10, Math.pow(T, nextLevel)),
+        400
+      );
     },
     updateMainColumnDimension() {
       const el = this.$refs.mainColumn;
