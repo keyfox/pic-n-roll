@@ -91,8 +91,10 @@ const PickNRollApp = {
       this.candidates = entries.filter((e) => hasImageExt(e.name));
       lastPickedIndex = -1;
       this.loadingDroppedItem = false;
-      this.shownItem = null;
-      this.roll();
+      this.shownImageId = null;
+      if (this.candidatesCount > 0) {
+        this.roll();
+      }
     });
     window.addEventListener("dragleave", (ev) => {
       ev.preventDefault();
@@ -237,6 +239,7 @@ const PickNRollApp = {
       this.show(id, opts);
     },
     roll() {
+      console.assert(this.candidatesCount > 0, "Candidates expected");
       // aliasing
       const ca = this.candidates;
 
