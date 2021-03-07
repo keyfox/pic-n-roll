@@ -31,6 +31,7 @@ let lastMouseMove = 0;
 const PickNRollApp = {
   data() {
     return {
+      appReady: false,
       // history of images. newer comes first.
       history: [],
       historyIndex: null,
@@ -65,6 +66,7 @@ const PickNRollApp = {
     };
   },
   mounted() {
+    this.appReady = true;
     window.addEventListener("dragenter", (ev) => {
       ev.preventDefault();
       dragEventTarget = ev.target;

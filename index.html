@@ -16,6 +16,7 @@
     <div id="root">
       <div
         id="app"
+        v-bind:class="{ready: appReady}"
         v-on:dragstart.prevent
         @mouseleave="userActive=false;keepUserActive=false;"
       >

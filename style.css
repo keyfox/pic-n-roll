@@ -25,6 +25,9 @@ div#app {
   display: flex;
   flex-direction: row;
 }
+div#app:not(.ready) {
+  display: none;
+}
 
 img {
   filter: drop-shadow(0px 2px 4px black);
