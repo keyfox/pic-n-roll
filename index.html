@@ -14,7 +14,11 @@
   </head>
   <body>
     <div id="root">
-      <div id="app" v-on:dragstart.prevent @mouseleave="userActive=false">
+      <div
+        id="app"
+        v-on:dragstart.prevent
+        @mouseleave="userActive=false;keepUserActive=false;"
+      >
         <div id="side-column">
           <ul id="history" class="fill">
             <template v-for="(h, i) in history" :key="h">
@@ -68,6 +72,8 @@
                 <button
                   id="prev-image-button"
                   v-if="history.length >= 2"
+                  @mousemove="keepUserActive=true"
+                  @mouseleave="keepUserActive=false"
                   @mousedown.stop
                   @click="showFromHistory(this.historyIndex + 1)"
                   v-bind:disabled="!prevHistoryAvailable"
@@ -77,13 +83,21 @@
                 </button>
               </div>
               <div class="image-switchers right">
-                <button id="roll-button" @mousedown.stop @click="roll">
+                <button
+                  id="roll-button"
+                  @mousemove="keepUserActive=true"
+                  @mouseleave="keepUserActive=false"
+                  @mousedown.stop
+                  @click="roll"
+                >
                   <div class="icon">🎲</div>
                   <div class="label">Roll!</div>
                 </button>
                 <button
                   id="next-image-button"
                   v-if="historyIndex > 0"
+                  @mousemove="keepUserActive=true"
+                  @mouseleave="keepUserActive=false"
                   @mousedown.stop
                   @click="showFromHistory(this.historyIndex - 1)"
                 >

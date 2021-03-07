@@ -51,6 +51,7 @@ const PickNRollApp = {
       loadingDroppedItem: false,
       // indicates whether the user is actively using the app.
       userActive: false,
+      keepUserActive: false,
       imageScalePercentage: 100,
       imageViewerScreenWidth: null,
       imageViewerScreenHeight: null,
@@ -99,7 +100,9 @@ const PickNRollApp = {
     });
     (() => {
       const inactivityDebounce = throttleDebounce.debounce(500, false, () => {
-        this.userActive = false;
+        if (!this.keepUserActive) {
+          this.userActive = false;
+        }
       });
       const activate = () => {
         if (!this.userActive) {
@@ -109,6 +112,9 @@ const PickNRollApp = {
       };
       window.addEventListener("mousemove", activate);
       window.addEventListener("mousedown", activate);
+      // window.addEventListener("mouseout", () => {
+      //   this.userActive = false;
+      // });
     })();
     (() => {
       const updateImageViewerScreenDimension = () => {
