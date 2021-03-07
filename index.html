@@ -111,7 +111,7 @@
           <div id="standby-screen" v-if="!shownImage">
             <p class="emoji-text">📁</p>
             <p>Drag directories here.</p>
-            <p class="error" v-if="itemsDropped">
+            <p class="error" v-if="itemsDropped && candidatesCount === 0">
               Some entries have been dropped, but no image files found inside
               any of them.
             </p>
